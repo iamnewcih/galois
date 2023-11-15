@@ -44,7 +44,10 @@ import org.springframework.core.io.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.liuguangsheng.galois.constants.Constant.*;
@@ -81,11 +84,9 @@ public class MyBatisBeanReloader implements BeanReloader<File>, MyBatisConfigura
 
             updateSingleBean(mapperLocation, namespace);
             Set<Resource> files = getAllNamespaceFile(namespace);
-            Set<Resource> mappers =
-                    files.stream()
-                            .filter(resource -> !resource.toString()
-                                    .contains(Objects.requireNonNull(mapperLocation.getFilename())))
-                            .collect(Collectors.toSet());
+            Set<Resource> mappers = files.stream()
+                    .filter(file -> !file.toString().contains(mapperLocation.getFilename()))
+                    .collect(Collectors.toSet());
 
             for (Resource resource : mappers) {
                 updateSingleBean(resource, namespace);
